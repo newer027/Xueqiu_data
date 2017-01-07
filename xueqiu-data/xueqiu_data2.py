@@ -20,7 +20,7 @@ coll = cl["local"]["test2"]
 projects = {}
 ZHs0={}
 ZHs1={}
-cookie = 's=7l12apugrb; xq_a_token=09edd344afac6eb03a03073c5afae983a81c9bdf; xqat=09edd344afac6eb03a03073c5afae983a81c9bdf; xq_r_token=7a735457503c14b65ca8a050828f0a9cb1345294; xq_is_login=1; u=1180102135; xq_token_expire=Thu%20Dec%2022%202016%2011%3A54%3A00%20GMT%2B0800%20(CST); bid=45efaa8643ba70c7f4357d0930ff99d4_iw042v36; Hm_lvt_1db88642e346389874251b5a1eded6e3=1478268495,1478268632,1478268834,1478309559; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1480218848'
+cookie = 'bid=45efaa8643ba70c7f4357d0930ff99d4_inh9dn35; webp=1; snbim_minify=true; __utma=1.805412118.1461664076.1480760609.1480842277.29; __utmc=1; __utmz=1.1461665900.2.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); s=5v11ixuysl; xq_a_token=3ccfa2b527823ecdb227614be7d9db338e38085b; xq_r_token=ab26c3445f978f0f2bdbefc79dc58b042137e0c4; u=1180102135; xq_token_expire=Wed%20Feb%2001%202017%2017%3A37%3A45%20GMT%2B0800%20(CST); xq_is_login=1; Hm_lvt_1db88642e346389874251b5a1eded6e3=1483781868; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1483787106'
 
 def prof(url_ap0):
     url = 'https://xueqiu.com/cubes/rebalancing/history.json?cube_symbol='+url_ap0+'&count=20&page=1'
