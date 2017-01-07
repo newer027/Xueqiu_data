@@ -1,0 +1,39 @@
+.container {
+  max-width: 1000px;
+}
+
+#chart {
+  overflow-y: scroll;
+}
+
+#chart {
+  background: #eee;
+  padding: 3px;
+}
+
+#chart div {
+  width: 0;
+  transition: all 1s ease-out;
+  -moz-transition: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
+}
+
+#chart div {
+  height: 25px;
+  font: 14px;
+  background-color: #576dcc;
+  text-align: right;
+  padding: 2px;
+  color: white;
+  box-shadow: 2px 2px 2px gray;
+}
+
+table.table-fixed {
+height:330px; 
+}
+table.table-fixed tbody{
+  overflow-y: auto;
+  height: 330px;
+  width: 100%;
+  position: absolute;
+}

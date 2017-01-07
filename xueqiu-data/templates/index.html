@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="XueqiuholdApp">
+  <head>
+    <link rel="shortcut icon" href="https://assets.imedao.com/images/vipicon_4@2x.png" />
+    <title>你关注的雪球组合持仓</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- 可选的Bootstrap主题文件（一般不使用） -->
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+
+  </head>
+    <body ng-controller="XueqiuholdController">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-7">
+          <div class="row-sm-7 col-sm-offset-1">
+          <h2>你的雪球ID</h2>
+          <br>
+          <form role="form" ng-submit="getResults()">
+            <div class="form-group">
+              <input type="text" name="url" class="form-control" id="url-box" placeholder="雪球ID" style="max-width: 300px;" ng-model="url" required>
+            </div>
+            {% raw %}
+              <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+            {% endraw %}
+          </form>
+          <div class="alert alert-danger" role="alert" ng-show='urlError'>
+            <span aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span>There was an error submitting your URL.<br>
+            Please check to make sure it is valid before trying again.</span>
+          </div> 
+        </div>
+          {% raw %}
+          <br>
+          <h4>关注组合最新调仓：</h4>
+          <div style="overflow: auto;">
+          <table class="table table-fixed table-striped">
+          <tbody>
+            <tr class="table-row" ng-repeat="(key, val) in trans">
+              <td Style="text-align:middle" item-width="162">{{val[0]}}</td>
+              <td Style="text-align:left" item-width="132"> {{val[2]}} </td>
+              <td Style="text-align:left" item-width="132"> {{val[1]}} </td>
+              <td Style="text-align:right" item-width="256"> {{val[3]}}</td>
+            </tr>
+          </tbody>
+          </table> 
+          </div>
+          {% endraw %}
+        </div>
+        <div class="col-sm-3 col-sm-offset-1">
+          <br><br>
+          <h4>关注组合累计仓位</h4>
+          <div id="results">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Stock</th>
+                  <th>Percent</th>
+                </tr>
+              </thead>
+              {% raw %}
+              <tbody>
+                <tr ng-repeat="(key, val) in xueqiuhold | orderBy:'key'">
+                  <td>{{key}}</td>
+                  <td>{{val.toFixed(2)}}%</td>
+                </tr>
+              </tbody>
+              {% endraw %}
+            </table>
+          </div>
+          <img class="col-sm-3 col-sm-offset-4" src="{{ url_for('static',
+            filename='spinner.gif') }}" ng-show="loading">
+        </div>
+      </div>
+      <br>
+      <div class="row-sm-12 row-sm-offset-1">      
+      <wordcount-chart data="xueqiuhold"></wordcount-chart>
+      </div>
+    </div>
+    <br><br>
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='d3.js') }}" charset="utf-8"></script>
+    <script src="{{ url_for('static', filename='angular.js') }}"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
