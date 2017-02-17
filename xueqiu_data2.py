@@ -1,45 +1,30 @@
 # -*- coding: utf-8 -*-
 
 import json
-from operator import itemgetter
 import re
 import urllib.request
-from bs4 import BeautifulSoup  # $ pip install beautifulsoup4
-from bson import json_util
-#html='https://xueqiu.com/P/ZH701073'
+from bs4 import BeautifulSoup
 from flask import Flask, render_template, request, jsonify
-from pymongo import MongoClient
 import time
-import datetime
 import pandas
 
 app = Flask(__name__)
-app.config['JSON_AS_ASCII'] = False 
-cl = MongoClient()
-coll = cl["local"]["test2"]
+app.config['JSON_AS_ASCII'] = False
 projects = {}
 ZHs0={}
 ZHs1={}
-cookie = 'bid=45efaa8643ba70c7f4357d0930ff99d4_inh9dn35; webp=1; snbim_minify=true; __utma=1.805412118.1461664076.1480760609.1480842277.29; __utmc=1; __utmz=1.1461665900.2.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); s=5v11ixuysl; xq_a_token=3ccfa2b527823ecdb227614be7d9db338e38085b; xq_r_token=ab26c3445f978f0f2bdbefc79dc58b042137e0c4; u=1180102135; xq_token_expire=Wed%20Feb%2001%202017%2017%3A37%3A45%20GMT%2B0800%20(CST); xq_is_login=1; Hm_lvt_1db88642e346389874251b5a1eded6e3=1483781868; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1483787106'
+cookie = 's=7017rril9u; xq_a_token=c4a084fe79a31a6ead299d4d49d622cab3b3b65e; xqat=c4a084fe79a31a6ead299d4d49d622cab3b3b65e; xq_r_token=fc287dc024ce197b1a0e1def6f674c260357bebf; xq_is_login=1; u=1180102135; xq_token_expire=Tue%20Mar%2014%202017%2016%3A56%3A10%20GMT%2B0800%20(CST); bid=45efaa8643ba70c7f4357d0930ff99d4_iz9kzepe'
 
 def prof(url_ap0):
     url = 'https://xueqiu.com/cubes/rebalancing/history.json?cube_symbol='+url_ap0+'&count=20&page=1'
-    req = urllib.request.Request(url,headers = {#'X-Requested-With': 'XMLHttpRequest',
-           #'Referer': 'http://xueqiu.com/p/ZH010389',
+    req = urllib.request.Request(url,headers = {
            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
-           #'Host': 'xueqiu.com',
-           #'Connection':'keep-alive',
-           #'Accept':'*/*',
            'cookie':cookie
            })
     html = urllib.request.urlopen(req).read().decode('utf-8')
-    #print(html)
     data = json.loads(html)
 
     for i in range (len(data['list'])):
-        #localtime = time.strftime("%y-%m-%d %H:%M:%S", time.localtime(data['list'][i]['updated_at'] / 1000))
-        #print('\n'+"    ************************")
-        #print (url_ap0+"  Transaction time:", localtime)
         for j in range(len(data['list'][i]['rebalancing_histories'])):
             if pandas.isnull(data['list'][i]['rebalancing_histories'][j]['prev_weight_adjusted']):
                 data['list'][i]['rebalancing_histories'][j]['prev_weight_adjusted'] = str(0)
@@ -49,10 +34,6 @@ def prof(url_ap0):
                 data['list'][i]['rebalancing_histories'][j]['target_weight'] = str(0)
             else:
                 data['list'][i]['rebalancing_histories'][j]['target_weight'] = str(data['list'][i]['rebalancing_histories'][j]['target_weight'])
-            #print(data['list'][i]['rebalancing_histories'][j]['stock_name'] + '   持仓变化:  '+ data['list'][i]['rebalancing_histories'][j]['prev_weight_adjusted'] + '% to ' + data['list'][i]['rebalancing_histories'][j]['target_weight'] + '%')
-        #print(stockName +" "+url_ap0 + "    - - - - -\t - - - - -")
-        #print(com['stocks'][o]['name']+"\t净值:"+com['stocks'][o]['net_value']+" 月收益:"+com['stocks'][o]['monthly_gain']+"%")
-        #printline += ("Transaction time:\t", localtime)
     try:
         for i in range(len(data['list'])):
             localtime = time.strftime("%y-%m-%d %H:%M:%S", time.localtime(data['list'][i]['updated_at'] / 1000))
@@ -64,13 +45,9 @@ def prof(url_ap0):
 
 
 def get_xueqiu_hold(url):
-    req = urllib.request.Request(url,headers = {#'X-Requested-With': 'XMLHttpRequest',
-               #'Referer': 'http://xueqiu.com/p/ZH010389',
-               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
-               #'Host': 'xueqiu.com',
-               #'Connection':'keep-alive',
-               #'Accept':'*/*',
-               'cookie':cookie
+    req = urllib.request.Request(url,headers = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
+                'cookie':cookie
                })
     soup = urllib.request.urlopen(req).read().decode('utf-8')
     soup = BeautifulSoup(soup, 'lxml')
@@ -78,40 +55,18 @@ def get_xueqiu_hold(url):
     json_text = re.search(r'^\s*SNB\.cubeInfo\s*=\s*({.*?})\s*;\s*$',
                       script.string, flags=re.DOTALL | re.MULTILINE).group(1)
     data = json.loads(json_text)
-    #print(data["view_rebalancing"]["holdings"][0]['stock_name'])
-    #print(data["view_rebalancing"]["holdings"][0]['weight'])
-    #assert data['activity']['type'] == 'read'
     for d in data["view_rebalancing"]["holdings"]:
         if d['stock_name'] in projects.keys():
             projects[d['stock_name']] += d['weight']            
         else:
             projects[d['stock_name']]= d['weight']
-    """
-    for d in data["view_rebalancing"]["holdings"]:
-        i = coll.find({'stock_name':d['stock_name']})
-        if(i):
-            coll.update({'stock_name':d['stock_name']}, {'weight':d['weight']})      
-        else:
-            coll.update({'stock_name':d['stock_name']}, d, True)
-    """
     
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
     return render_template("index.html")
 
-"""
-@app.route('/start', methods=['POST'])
-def post_url():
-    # get url
-    data = json.loads(request.data.decode())
-    url = data["url"]
-    if 'https://' not in url[:8]:
-        url = 'https://' + url
-    coll.remove({})
-    get_xueqiu_hold(url)
-    return url
-"""
+
 @app.route('/start', methods=['POST'])
 def post_url():
     # get url
@@ -120,16 +75,9 @@ def post_url():
     ZHs1.clear()    
     data = json.loads(request.data.decode())
     url = data["url"]
-    #if 'https://' not in url[:8]:
-    #    url = 'https://' + url
-    #coll.remove({})
     url0 = 'https://xueqiu.com/stock/portfolio/stocks.json?size=1000&pid=-1&tuid='+url+'&cuid=1180102135&_=1477728185503'
-    req = urllib.request.Request(url0,headers = {#'X-Requested-With': 'XMLHttpRequest',
-           #'Referer': 'http://xueqiu.com/p/ZH010389',
+    req = urllib.request.Request(url0,headers = {
            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36',
-           #'Host': 'xueqiu.com',
-           #'Connection':'keep-alive',
-           #'Accept':'*/*',
            'cookie':cookie
            })
     html = urllib.request.urlopen(req).read().decode('utf-8')
@@ -142,21 +90,10 @@ def post_url():
     ZHs = re.findall('ZH\d{6}',data["portfolios"][0]["stocks"])
     for ZH in ZHs:
         get_xueqiu_hold("https://xueqiu.com/P/"+ZH)
-    #get_xueqiu_hold(url)
     return url
 
 @app.route("/data")
 def data():
-    """
-    projects = coll.find({},{'stock_name':True,'weight':True,'_id':False})
-    json_projects = []
-    json_projects0 = {}
-    for project in projects:
-        #json_projects[project['stock_name']]=project['weight']
-        json_projects.append(project)
-    for json_project in json_projects:
-        json_projects0[json_project['stock_name']]=json_project['weight']
-    """
     projects0 = sorted(projects.items(), key=lambda x: (-x[1],x[0]))[:12]
     return jsonify(dict(projects0))
 
