@@ -1,5 +1,5 @@
 # Xueqiu_data
-使用flask和requests开发的单页面应用，获取雪球ID关注的组合的调仓信息和关注组合的累计股票仓位。
+使用flask和BeautifulSoup开发的单页面应用，获取雪球ID关注的组合的调仓信息和关注组合的累计股票仓位。
 
 An single-page application developed with the flask and request framwork to get the portfolio change and the cumulative stock position of the Xueqiu ID following portfolioes.
 
